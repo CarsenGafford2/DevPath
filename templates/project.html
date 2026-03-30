@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ project.title }} - DevPath</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="project-header">
+        <h1>{{ project.title }}</h1>
+        <p>{{ project.description }}</p>
+
+        <div class="tags">
+            <span>{{ project.skills[0] }}</span>
+            <span>{{ project.level }}</span>
+            <span>{{ project.time }}</span>
+        </div>
+    </div>
+
+    <!-- TECH STACK -->
+    <div class="section">
+        <h2>Tech Stack</h2>
+        <ul>
+            {% for tech in project.tech_stack %}
+            <li>{{ tech }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="section">
+        <h2>Features</h2>
+        <ul>
+            {% for feature in project.features %}
+            <li>{{ feature }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- ROADMAP -->
+    <div class="section">
+        <h2>Roadmap</h2>
+        <ol class="roadmap">
+            {% for step in project.roadmap %}
+            <li>{{ step }}</li>
+            {% endfor %}
+        </ol>
+    </div>
+
+    <!-- RESOURCES -->
+    <div class="section">
+        <h2>Resources</h2>
+        <ul>
+            {% for link in project.resources %}
+            <li>
+                <a href="{{ link }}" target="_blank">{{ link }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- STARTER CODE -->
+    <div class="section">
+        <h2>Starter Code</h2>
+
+        <a href="/download/{{ project.starter_code }}">
+            <button class="download-btn">Download Starter Code</button>
+        </a>
+    </div>
+
+    <!-- BACK BUTTON -->
+    <div class="section">
+        <a href="/">
+            <button class="back-btn">← Back to Home</button>
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>
