@@ -1,47 +1,165 @@
+
+/* RESET */
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
-    background: #f9f9f9;
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fb;
 }
 
+/* HERO SECTION */
 .hero {
-    background: linear-gradient(135deg, #4a90e2, #9013fe);
-    color: white;
+    background: linear-gradient(to right, #4e54c8, #8f94fb);
+    padding: 80px 20px;
     text-align: center;
-    padding: 50px;
+    color: white;
 }
 
-form input, form select, form button {
-    margin: 10px;
-    padding: 10px;
+.hero h1 {
+    margin-bottom: 10px;
+    font-size: 32px;
+}
+
+.hero p {
+    margin-bottom: 20px;
+}
+
+/* FORM */
+form select,
+form button {
+    padding: 12px;
+    margin: 8px;
     border-radius: 8px;
     border: none;
+    font-size: 14px;
 }
 
-button {
-    background: #fff;
-    color: #4a90e2;
-    font-weight: bold;
+form select {
+    width: 150px;
+}
+
+form button {
+    background-color: white;
     cursor: pointer;
+    font-weight: bold;
 }
 
+/* FEATURES */
 .features {
     display: flex;
-    justify-content: space-around;
-    margin: 30px;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 20px;
+    flex-wrap: wrap;
 }
 
-.card {
+.feature-card {
     background: white;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 250px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.08);
 }
 
+/* RESULTS GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+/* PROJECT CARD */
 .project-card {
     background: white;
-    margin: 20px;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.08);
+    transition: 0.2s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+}
+
+/* TAGS */
+.tags {
+    margin: 10px 0;
+}
+
+.tags span {
+    background: #eef1ff;
+    padding: 5px 10px;
+    margin: 3px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+/* BUTTONS */
+.details-btn,
+.download-btn,
+.back-btn {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.details-btn {
+    background: #4e54c8;
+    color: white;
+}
+
+.download-btn {
+    background: #28a745;
+    color: white;
+}
+
+.back-btn {
+    background: #ccc;
+}
+
+/* CONTAINER */
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* SECTIONS */
+.section {
+    background: white;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+}
+
+/* ROADMAP */
+.roadmap li {
+    margin-bottom: 10px;
+}
+
+/* ERROR & EMPTY STATES */
+.error {
+    text-align: center;
+    color: red;
+}
+
+.empty {
+    text-align: center;
+    padding: 20px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+    form select {
+        width: 100%;
+    }
+
+    .features {
+        flex-direction: column;
+        align-items: center;
+    }
 }
