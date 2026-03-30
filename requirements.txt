@@ -1,1 +1,4 @@
-Flask==2.2.5
+# requirements.txt - Python dependencies for the Skill to Project Recommender
+
+# Flask is the only runtime dependency for the web server
+Flask==3.0.3
