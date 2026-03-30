@@ -1,67 +1,131 @@
 [
   {
+    "id": 1,
     "title": "Expense Tracker",
     "skills": ["Python"],
     "level": "Beginner",
     "interest": "General",
     "time": "Low",
-    "description": "Track daily expenses and visualize spending.",
-    "features": ["Add expenses", "View summary"],
+    "description": "Build a simple application to track daily expenses and view summaries.",
+    "features": [
+      "Add and delete expenses",
+      "View total spending",
+      "Categorize expenses"
+    ],
     "tech_stack": ["Python"],
-    "roadmap": ["Setup project", "Create input system", "Display summary"],
-    "resources": ["https://docs.python.org"],
+    "roadmap": [
+      "Set up project structure",
+      "Create input system for expenses",
+      "Store data in file",
+      "Display summaries"
+    ],
+    "resources": [
+      "https://docs.python.org/3/tutorial/",
+      "https://realpython.com/"
+    ],
     "starter_code": "starter_code/expense_tracker.py"
   },
   {
+    "id": 2,
     "title": "Student Performance Analyzer",
     "skills": ["Python"],
     "level": "Beginner",
     "interest": "Data",
     "time": "Medium",
-    "description": "Analyze student marks and performance trends.",
-    "features": ["Load dataset", "Analyze scores"],
+    "description": "Analyze student performance using basic data analysis techniques.",
+    "features": [
+      "Load dataset",
+      "Calculate averages",
+      "Visualize performance"
+    ],
     "tech_stack": ["Python", "Pandas"],
-    "roadmap": ["Load data", "Clean data", "Visualize"],
-    "resources": ["https://pandas.pydata.org"],
+    "roadmap": [
+      "Load dataset",
+      "Clean data",
+      "Perform analysis",
+      "Visualize results"
+    ],
+    "resources": [
+      "https://pandas.pydata.org/docs/",
+      "https://matplotlib.org/"
+    ],
     "starter_code": "starter_code/student_analyzer.py"
   },
   {
+    "id": 3,
     "title": "Portfolio Website",
     "skills": ["Web"],
     "level": "Beginner",
     "interest": "Web",
     "time": "Low",
-    "description": "Create a personal portfolio website.",
-    "features": ["Homepage", "Projects section"],
+    "description": "Create a personal portfolio website to showcase your projects.",
+    "features": [
+      "Homepage",
+      "Projects section",
+      "Contact section"
+    ],
     "tech_stack": ["HTML", "CSS"],
-    "roadmap": ["Design layout", "Build pages"],
-    "resources": ["https://developer.mozilla.org"],
+    "roadmap": [
+      "Design layout",
+      "Build HTML structure",
+      "Style with CSS",
+      "Deploy website"
+    ],
+    "resources": [
+      "https://developer.mozilla.org/en-US/docs/Web",
+      "https://css-tricks.com/"
+    ],
     "starter_code": "starter_code/portfolio.html"
   },
   {
+    "id": 4,
     "title": "Blog Platform",
     "skills": ["Python"],
     "level": "Intermediate",
     "interest": "Web",
     "time": "High",
-    "description": "Build a simple blogging platform.",
-    "features": ["Create posts", "Edit posts"],
+    "description": "Develop a basic blogging platform with post creation and editing.",
+    "features": [
+      "Create blog posts",
+      "Edit posts",
+      "Display posts"
+    ],
     "tech_stack": ["Flask"],
-    "roadmap": ["Setup Flask", "Create routes", "Add templates"],
-    "resources": ["https://flask.palletsprojects.com"],
+    "roadmap": [
+      "Set up Flask app",
+      "Create routes",
+      "Design templates",
+      "Implement CRUD operations"
+    ],
+    "resources": [
+      "https://flask.palletsprojects.com/",
+      "https://jinja.palletsprojects.com/"
+    ],
     "starter_code": "starter_code/blog_app.py"
   },
   {
+    "id": 5,
     "title": "Data Visualization Dashboard",
     "skills": ["Python"],
     "level": "Intermediate",
     "interest": "Data",
     "time": "Medium",
-    "description": "Create charts from datasets.",
-    "features": ["Charts", "Filters"],
+    "description": "Build a dashboard to visualize data using charts and graphs.",
+    "features": [
+      "Load dataset",
+      "Create charts",
+      "Filter data"
+    ],
     "tech_stack": ["Python", "Matplotlib"],
-    "roadmap": ["Load data", "Create charts"],
-    "resources": ["https://matplotlib.org"],
+    "roadmap": [
+      "Load data",
+      "Process data",
+      "Create visualizations",
+      "Display results"
+    ],
+    "resources": [
+      "https://matplotlib.org/stable/tutorials/index.html"
+    ],
     "starter_code": "starter_code/dashboard.py"
   }
 ]
