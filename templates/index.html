@@ -1,44 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Skill → Project Recommender</title>
+    <title>DevPath</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <section class="hero">
-        <h1>Find Projects Based On Your Skills</h1>
-        <form method="POST">
-            <input type="text" name="skill" placeholder="Enter your skill" required>
-            <select name="level">
-                <option>Beginner</option>
-                <option>Intermediate</option>
-                <option>Advanced</option>
-            </select>
-            <input type="text" name="interest" placeholder="Enter your interest" required>
-            <select name="time">
-                <option>Low</option>
-                <option>Medium</option>
-                <option>High</option>
-            </select>
-            <button type="submit">Generate Projects</button>
-        </form>
-    </section>
 
-    <section class="features">
-        <div class="card">Personalized Recommendations</div>
-        <div class="card">Step-by-Step Roadmaps</div>
-        <div class="card">Starter Code Included</div>
-    </section>
+<div class="hero">
+    <h1>Find Projects Based On Your Skills</h1>
 
-    <section class="output">
-        {% for project in projects %}
-        <div class="project-card">
-            <h2>{{ project.title }}</h2>
-            <p>{{ project.description }}</p>
-            <p>Difficulty: {{ project.level }}</p>
-            <button>View Details</button>
-        </div>
-        {% endfor %}
-    </section>
+    <form method="POST">
+        <select name="skill">
+            <option value="Python">Python</option>
+            <option value="Web">Web</option>
+        </select>
+
+        <select name="level">
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+        </select>
+
+        <select name="interest">
+            <option value="Data">Data</option>
+            <option value="Web">Web</option>
+            <option value="General">General</option>
+        </select>
+
+        <select name="time">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+        </select>
+
+        <button type="submit">Generate Projects</button>
+    </form>
+</div>
+
+<div class="features">
+    <div class="card">Personalized Recommendations</div>
+    <div class="card">Step-by-Step Roadmaps</div>
+    <div class="card">Starter Code Included</div>
+</div>
+
+<div class="results">
+    {% for project in recommendations %}
+    <div class="project-card">
+        <h3>{{ project.title }}</h3>
+        <p>{{ project.description }}</p>
+        <p><strong>Level:</strong> {{ project.level }}</p>
+        <button>View Details</button>
+    </div>
+    {% endfor %}
+</div>
+
 </body>
 </html>
