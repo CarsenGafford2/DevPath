@@ -1,56 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>DevPath</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
+<!-- HERO SECTION -->
 <div class="hero">
-    <h1>Find Projects Based On Your Skills</h1>
+    <div class="hero-content">
+        <h1>Find Projects Based On Your Skills</h1>
+        <p>Turn your skills into real projects with guided roadmaps and starter code</p>
 
-    <form method="POST">
-        <select name="skill">
-            <option value="Python">Python</option>
-            <option value="Web">Web</option>
-        </select>
+        <form method="POST" id="projectForm">
 
-        <select name="level">
-            <option value="Beginner">Beginner</option>
-            <option value="Intermediate">Intermediate</option>
-        </select>
+            <select name="skill" required>
+                <option value="">Select Skill</option>
+                <option value="Python">Python</option>
+                <option value="Web">Web</option>
+            </select>
 
-        <select name="interest">
-            <option value="Data">Data</option>
-            <option value="Web">Web</option>
-            <option value="General">General</option>
-        </select>
+            <select name="level" required>
+                <option value="">Select Level</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+            </select>
 
-        <select name="time">
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-        </select>
+            <select name="interest" required>
+                <option value="">Select Interest</option>
+                <option value="Data">Data</option>
+                <option value="Web">Web</option>
+                <option value="General">General</option>
+            </select>
 
-        <button type="submit">Generate Projects</button>
-    </form>
-</div>
+            <select name="time" required>
+                <option value="">Time Availability</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
 
-<div class="features">
-    <div class="card">Personalized Recommendations</div>
-    <div class="card">Step-by-Step Roadmaps</div>
-    <div class="card">Starter Code Included</div>
-</div>
-
-<div class="results">
-    {% for project in recommendations %}
-    <div class="project-card">
-        <h3>{{ project.title }}</h3>
-        <p>{{ project.description }}</p>
-        <p><strong>Level:</strong> {{ project.level }}</p>
-        <button>View Details</button>
+            <button type="submit">Generate Projects</button>
+        </form>
     </div>
-    {% endfor %}
+</div>
+
+<!-- FEATURES SECTION -->
+<div class="features">
+    <div class="feature-card">
+        <h3>Personalized Recommendations</h3>
+        <p>Get projects tailored to your skills and interests</p>
+    </div>
+
+    <div class="feature-card">
+        <h3>Step-by-Step Roadmaps</h3>
+        <p>Follow structured steps to complete your project</p>
+    </div>
+
+    <div class="feature-card">
+        <h3>Starter Code Included</h3>
+        <p>Start building instantly with ready templates</p>
+    </div>
+</div>
+
+<!-- ERROR MESSAGE -->
+{% if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
+
+<!-- RESULTS SECTION -->
+<div class="results">
+
+    {% if recommendations %}
+        <div class="grid">
+
+            {% for project in recommendations %}
+            <div class="project-card">
+
+                <h3>{{ project.title }}</h3>
+                <p>{{ project.description }}</p>
+
+                <div class="tags">
+                    <span>{{ project.skills[0] }}</span>
+                    <span>{{ project.level }}</span>
+                    <span>{{ project.time }}</span>
+                </div>
+
+                <a href="/project/{{ project.id }}">
+                    <button class="details-btn">View Details</button>
+                </a>
+
+            </div>
+            {% endfor %}
+
+        </div>
+    {% else %}
+        <p class="empty">No projects found</p>
+    {% endif %}
+
 </div>
 
 </body>
