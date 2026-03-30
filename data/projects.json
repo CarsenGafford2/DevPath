@@ -1,131 +1,222 @@
 [
   {
     "id": 1,
-    "title": "Expense Tracker",
+    "title": "Personal Expense Tracker",
     "skills": ["Python"],
     "level": "Beginner",
-    "interest": "General",
+    "interest": "Data",
     "time": "Low",
-    "description": "Build a simple application to track daily expenses and view summaries.",
+    "description": "A command-line tool that helps users track daily expenses, categorize spending, and generate simple summary reports. Great for learning file handling, loops, and basic data processing.",
     "features": [
-      "Add and delete expenses",
-      "View total spending",
-      "Categorize expenses"
+      "Add and delete expense entries",
+      "Categorize expenses (food, transport, bills)",
+      "View monthly summary",
+      "Export data to CSV file"
     ],
-    "tech_stack": ["Python"],
+    "tech_stack": ["Python", "CSV module", "datetime module"],
     "roadmap": [
-      "Set up project structure",
-      "Create input system for expenses",
-      "Store data in file",
-      "Display summaries"
+      "Step 1: Set up the project folder and create main.py",
+      "Step 2: Design the expense data structure as a dictionary",
+      "Step 3: Write functions to add and delete expenses",
+      "Step 4: Implement category filtering logic",
+      "Step 5: Write the summary report generator",
+      "Step 6: Add CSV export functionality",
+      "Step 7: Test with sample data and fix bugs"
     ],
     "resources": [
-      "https://docs.python.org/3/tutorial/",
-      "https://realpython.com/"
+      "Python official docs: https://docs.python.org",
+      "CSV module guide: https://docs.python.org/3/library/csv.html",
+      "Real Python beginner tutorials: https://realpython.com"
     ],
     "starter_code": "starter_code/expense_tracker.py"
   },
   {
     "id": 2,
-    "title": "Student Performance Analyzer",
-    "skills": ["Python"],
-    "level": "Beginner",
-    "interest": "Data",
-    "time": "Medium",
-    "description": "Analyze student performance using basic data analysis techniques.",
-    "features": [
-      "Load dataset",
-      "Calculate averages",
-      "Visualize performance"
-    ],
-    "tech_stack": ["Python", "Pandas"],
-    "roadmap": [
-      "Load dataset",
-      "Clean data",
-      "Perform analysis",
-      "Visualize results"
-    ],
-    "resources": [
-      "https://pandas.pydata.org/docs/",
-      "https://matplotlib.org/"
-    ],
-    "starter_code": "starter_code/student_analyzer.py"
-  },
-  {
-    "id": 3,
-    "title": "Portfolio Website",
-    "skills": ["Web"],
+    "title": "Weather Dashboard",
+    "skills": ["JavaScript", "HTML", "CSS"],
     "level": "Beginner",
     "interest": "Web",
     "time": "Low",
-    "description": "Create a personal portfolio website to showcase your projects.",
+    "description": "A simple web page that fetches weather data from a free API and displays current conditions for any city. Teaches API calls, DOM manipulation, and basic UI design.",
     "features": [
-      "Homepage",
-      "Projects section",
-      "Contact section"
+      "Search weather by city name",
+      "Display temperature, humidity, and conditions",
+      "Show a weather icon based on conditions",
+      "Toggle between Celsius and Fahrenheit"
     ],
-    "tech_stack": ["HTML", "CSS"],
+    "tech_stack": ["HTML", "CSS", "JavaScript", "OpenWeatherMap API"],
     "roadmap": [
-      "Design layout",
-      "Build HTML structure",
-      "Style with CSS",
-      "Deploy website"
+      "Step 1: Create the HTML structure with a search form",
+      "Step 2: Style the page with CSS flexbox",
+      "Step 3: Sign up for a free OpenWeatherMap API key",
+      "Step 4: Write the fetch() call to get weather data",
+      "Step 5: Parse the JSON response and extract key fields",
+      "Step 6: Display the data dynamically using DOM methods",
+      "Step 7: Add the Celsius/Fahrenheit toggle button"
     ],
     "resources": [
-      "https://developer.mozilla.org/en-US/docs/Web",
-      "https://css-tricks.com/"
+      "MDN Fetch API: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API",
+      "OpenWeatherMap free tier: https://openweathermap.org/api",
+      "CSS Flexbox guide: https://css-tricks.com/snippets/css/a-guide-to-flexbox"
+    ],
+    "starter_code": "starter_code/weather_dashboard.html"
+  },
+  {
+    "id": 3,
+    "title": "Student Grade Manager",
+    "skills": ["Python"],
+    "level": "Beginner",
+    "interest": "Education",
+    "time": "Medium",
+    "description": "A Python application to store student names and their grades, compute averages, and display a class report. Ideal for practicing data structures, functions, and file persistence.",
+    "features": [
+      "Add students and assign grades per subject",
+      "Calculate individual and class averages",
+      "Assign letter grades automatically",
+      "Save and load data from a JSON file"
+    ],
+    "tech_stack": ["Python", "json module", "os module"],
+    "roadmap": [
+      "Step 1: Define the student data structure using a dictionary",
+      "Step 2: Write add_student() and add_grade() functions",
+      "Step 3: Implement average calculation logic",
+      "Step 4: Create a letter grade converter function",
+      "Step 5: Build the JSON save/load functions",
+      "Step 6: Create a simple text menu for user interaction",
+      "Step 7: Write a class report printer function"
+    ],
+    "resources": [
+      "Python JSON module: https://docs.python.org/3/library/json.html",
+      "Python functions tutorial: https://realpython.com/defining-your-own-python-function",
+      "W3Schools Python: https://www.w3schools.com/python"
+    ],
+    "starter_code": "starter_code/grade_manager.py"
+  },
+  {
+    "id": 4,
+    "title": "Task Manager REST API",
+    "skills": ["Python"],
+    "level": "Intermediate",
+    "interest": "Web",
+    "time": "Medium",
+    "description": "A RESTful API built with Flask that allows clients to create, read, update, and delete tasks. Perfect for learning API design, HTTP methods, and JSON responses.",
+    "features": [
+      "CRUD endpoints for tasks",
+      "Filter tasks by status (pending, done)",
+      "Assign priority levels to tasks",
+      "Persist data to a JSON file"
+    ],
+    "tech_stack": ["Python", "Flask", "JSON", "Postman (for testing)"],
+    "roadmap": [
+      "Step 1: Install Flask and create the app.py file",
+      "Step 2: Define the task data model as a dictionary",
+      "Step 3: Create the GET /tasks endpoint to list all tasks",
+      "Step 4: Create the POST /tasks endpoint to add a task",
+      "Step 5: Create PUT /tasks/<id> to update a task",
+      "Step 6: Create DELETE /tasks/<id> to remove a task",
+      "Step 7: Add JSON file persistence for saving tasks",
+      "Step 8: Test all endpoints using Postman or curl"
+    ],
+    "resources": [
+      "Flask quickstart: https://flask.palletsprojects.com/quickstart",
+      "REST API design guide: https://restfulapi.net",
+      "Postman download: https://www.postman.com/downloads"
+    ],
+    "starter_code": "starter_code/task_api.py"
+  },
+  {
+    "id": 5,
+    "title": "Portfolio Website",
+    "skills": ["HTML", "CSS", "JavaScript"],
+    "level": "Beginner",
+    "interest": "Web",
+    "time": "Low",
+    "description": "A personal portfolio site with sections for bio, projects, and contact. A great first project that teaches HTML layout, CSS styling, and a bit of JavaScript for interactivity.",
+    "features": [
+      "Hero section with name and tagline",
+      "Projects grid with cards",
+      "Skills list with visual indicators",
+      "Contact form with basic validation"
+    ],
+    "tech_stack": ["HTML", "CSS", "JavaScript"],
+    "roadmap": [
+      "Step 1: Plan the page sections on paper first",
+      "Step 2: Write the HTML structure for all sections",
+      "Step 3: Add CSS reset and base typography styles",
+      "Step 4: Style the navigation and hero section",
+      "Step 5: Build the projects grid using CSS Grid",
+      "Step 6: Add the contact form with labels and inputs",
+      "Step 7: Write JavaScript for form validation",
+      "Step 8: Make the site responsive with media queries"
+    ],
+    "resources": [
+      "HTML reference: https://developer.mozilla.org/en-US/docs/Web/HTML",
+      "CSS Grid guide: https://css-tricks.com/snippets/css/complete-guide-grid",
+      "Responsive design basics: https://web.dev/learn/design"
     ],
     "starter_code": "starter_code/portfolio.html"
   },
   {
-    "id": 4,
-    "title": "Blog Platform",
-    "skills": ["Python"],
+    "id": 6,
+    "title": "URL Shortener",
+    "skills": ["Python", "JavaScript", "HTML", "CSS"],
     "level": "Intermediate",
     "interest": "Web",
     "time": "High",
-    "description": "Develop a basic blogging platform with post creation and editing.",
+    "description": "A full-stack web app that takes long URLs and generates short codes. Users can paste a link and get a shorter one back. Teaches Flask routing, random code generation, and front-end form handling.",
     "features": [
-      "Create blog posts",
-      "Edit posts",
-      "Display posts"
+      "Shorten any valid URL",
+      "Redirect short codes to original URL",
+      "Track how many times a link was clicked",
+      "List all shortened links in a dashboard"
     ],
-    "tech_stack": ["Flask"],
+    "tech_stack": ["Python", "Flask", "HTML", "CSS", "JavaScript", "JSON"],
     "roadmap": [
-      "Set up Flask app",
-      "Create routes",
-      "Design templates",
-      "Implement CRUD operations"
+      "Step 1: Set up Flask app with two routes: home and redirect",
+      "Step 2: Write a random 6-character code generator",
+      "Step 3: Store URL mappings in a JSON file",
+      "Step 4: Build the HTML form for pasting long URLs",
+      "Step 5: Display the shortened URL after submission",
+      "Step 6: Implement the redirect route using the short code",
+      "Step 7: Add a click counter that updates on each visit",
+      "Step 8: Build a simple dashboard to list all links"
     ],
     "resources": [
-      "https://flask.palletsprojects.com/",
-      "https://jinja.palletsprojects.com/"
+      "Flask routing docs: https://flask.palletsprojects.com/en/stable/quickstart/#routing",
+      "Python secrets module: https://docs.python.org/3/library/secrets.html",
+      "UUID in Python: https://docs.python.org/3/library/uuid.html"
     ],
-    "starter_code": "starter_code/blog_app.py"
+    "starter_code": "starter_code/url_shortener.py"
   },
   {
-    "id": 5,
-    "title": "Data Visualization Dashboard",
+    "id": 7,
+    "title": "Data Analysis Report Generator",
     "skills": ["Python"],
     "level": "Intermediate",
     "interest": "Data",
-    "time": "Medium",
-    "description": "Build a dashboard to visualize data using charts and graphs.",
+    "time": "High",
+    "description": "Upload a CSV file and automatically generate a summary report with statistics, missing value counts, and basic charts. A practical project for learning data wrangling and pandas.",
     "features": [
-      "Load dataset",
-      "Create charts",
-      "Filter data"
+      "Load and inspect CSV files",
+      "Show column types and null counts",
+      "Calculate mean, median, and mode per column",
+      "Generate bar charts for categorical data"
     ],
-    "tech_stack": ["Python", "Matplotlib"],
+    "tech_stack": ["Python", "pandas", "matplotlib", "os module"],
     "roadmap": [
-      "Load data",
-      "Process data",
-      "Create visualizations",
-      "Display results"
+      "Step 1: Install pandas and matplotlib via pip",
+      "Step 2: Write a CSV loader that validates the file path",
+      "Step 3: Generate a summary table of column info",
+      "Step 4: Compute descriptive statistics for numeric columns",
+      "Step 5: Count and display missing values per column",
+      "Step 6: Build chart generation functions using matplotlib",
+      "Step 7: Export the full report to a text or HTML file"
     ],
     "resources": [
-      "https://matplotlib.org/stable/tutorials/index.html"
+      "pandas docs: https://pandas.pydata.org/docs",
+      "matplotlib tutorials: https://matplotlib.org/stable/tutorials",
+      "Real Python data analysis: https://realpython.com/pandas-dataframe"
     ],
-    "starter_code": "starter_code/dashboard.py"
+    "starter_code": "starter_code/data_report.py"
   }
 ]
