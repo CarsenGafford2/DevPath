@@ -1,82 +1,93 @@
-# DevPath: Project Overview
+# Project Overview — DevPath
 
-## Introduction
+## What Is DevPath?
 
-DevPath is a beginner-friendly web application designed to help students discover relevant project ideas based on their current skills and interests.
-
-Many learners face difficulty in deciding what to build, how to start, and how to structure their learning journey. DevPath addresses this problem by recommending structured projects along with guidance and starter resources.
-
----
-
-## Objective
-
-The main objective of DevPath is to:
-
-- Help users convert their skills into actionable projects
-- Provide structured learning through project-based guidance
-- Reduce confusion for beginners entering development
+DevPath is an open-source web application that helps developers — especially
+beginners — find meaningful coding projects to build. Instead of searching
+through generic lists, a developer describes their situation in four inputs
+and DevPath returns the three best-matched projects, complete with everything
+needed to start immediately.
 
 ---
 
-## Key Features
+## The Problem It Solves
 
-- Skill-based project recommendation system  
-- Project detail pages with:
-  - Description  
-  - Features  
-  - Tech stack  
-  - Roadmap  
-  - Resources  
-- Starter code download support  
-- Clean and simple user interface  
+Many beginner and intermediate developers know they should be building projects
+to grow their skills, but they face two blockers:
+
+1. **"What should I build?"** — Choosing a project that is too easy wastes
+   time; too hard and they give up.
+2. **"Where do I start?"** — Even a well-chosen project idea is overwhelming
+   without a clear first step.
+
+DevPath addresses both problems in a single tool.
+
+---
+
+## How It Works (User Perspective)
+
+1. The user opens DevPath and enters the skills they already know (e.g. Python,
+   HTML, JavaScript).
+2. They select three preferences: experience level, area of interest, and
+   how much time they can commit.
+3. DevPath scores every project in its dataset against those inputs and returns
+   the top three matches.
+4. Each match links to a full detail page showing: description, feature list,
+   tech stack, a visual roadmap, learning resources, and a downloadable starter
+   code template.
 
 ---
 
 ## Target Audience
 
-- College students  
-- Beginners in programming  
-- Self-learners exploring development  
+- Beginner programmers who have learned the basics and want to apply them
+- Intermediate developers exploring a new language or interest area
+- Open-source program participants (GSSoC, Hacktoberfest) looking for a
+  contribution-ready project to work on
+- Coding bootcamp students who need portfolio projects
 
 ---
 
-## Problem Being Solved
+## Design Philosophy
 
-Beginners often:
-- Do not know what projects to build  
-- Lack direction and structure  
-- Feel overwhelmed by too many choices  
+**Simple over clever.** The recommendation engine is intentionally rule-based
+rather than ML-based. This keeps the code readable, testable, and accessible
+to contributors of all experience levels.
 
-DevPath simplifies this by:
-- Filtering projects based on user input  
-- Providing a clear roadmap  
-- Offering ready-to-use starter code  
+**Modular over monolithic.** Logic is split into `utils/` modules so each
+concern (data loading, scoring, file serving) can be understood and tested
+independently.
 
----
-
-## How DevPath Helps
-
-Instead of searching randomly for ideas, users can:
-
-1. Select their skill and level  
-2. Choose their interest and time availability  
-3. Get personalized project recommendations  
-4. Follow a roadmap to complete the project  
+**Documented over assumed.** Every function has a docstring explaining its
+inputs, outputs, and purpose.
 
 ---
 
-## Future Scope
+## Dataset
 
-DevPath can be extended to include:
+All project data lives in `data/projects.json`. Each project is a self-contained
+JSON object describing everything a developer needs: skills required, level,
+interest area, time commitment, a description, features, tech stack, roadmap
+steps, learning resources, and the path to its starter code file.
 
-- AI-based recommendation system  
-- User accounts and saved projects  
-- Advanced filtering and search  
-- Integration with GitHub repositories  
-- Progress tracking system  
+The dataset is deliberately small (7 projects) to keep it easy for contributors
+to add their own entries without needing to understand the full codebase.
 
 ---
 
-## Summary
+## Starter Code
 
-DevPath is a simple yet powerful tool that helps learners move from "I don't know what to build" to "I can start building today".
+Each project has a corresponding starter template in `starter_code/`. These
+files are intentionally incomplete — they scaffold the structure and define
+the function signatures, but leave the implementation as a learning exercise.
+This is the "blank page problem" solution: the developer has a working skeleton
+to read, modify, and extend.
+
+---
+
+## Open-Source Structure
+
+DevPath is designed to be a learning ground for open-source contribution. The
+codebase is deliberately kept simple, the issues are labelled by difficulty, and
+the documentation walks through everything from setup to pull requests. It is
+suitable as a mentored project for programs like GSSoC, MLH, or Hacktoberfest.
