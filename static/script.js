@@ -1,35 +1,66 @@
 // script.js — DevPath client-side logic
-// Handles: skill chip manager, form validation, API calls,
-//          result card rendering, and the code viewer panel.
+//
+// Responsibilities:
+//   - Mobile navigation toggle
+//   - Skill chip manager (add/remove skills)
+//   - Form validation with per-field error messages
+//   - Recommendation API call and loading states
+//   - Result card rendering
+//   - Code viewer panel (detail page)
 
 // ============================================================
-// Determine which page we are on by checking for key elements
+// Detect which page we are on
 // ============================================================
-var isIndexPage   = !!document.getElementById("recommend-form");
-var isDetailPage  = typeof PROJECT_ID !== "undefined";
+var isIndexPage  = !!document.getElementById("recommend-form");
+var isDetailPage = typeof PROJECT_ID !== "undefined";
 
 
 // ============================================================
-// INDEX PAGE LOGIC
+// Mobile navigation toggle (runs on all pages)
+// ============================================================
+(function initMobileNav() {
+  var toggle = document.getElementById("nav-mobile-toggle");
+  var menu   = document.getElementById("nav-mobile-menu");
+
+  if (!toggle || !menu) return;
+
+  toggle.addEventListener("click", function () {
+    var isOpen = menu.classList.toggle("open");
+    toggle.classList.toggle("open", isOpen);
+    toggle.setAttribute("aria-expanded", isOpen);
+  });
+
+  // Close menu when any mobile link is clicked
+  menu.querySelectorAll(".nav-mobile-link").forEach(function (link) {
+    link.addEventListener("click", function () {
+      menu.classList.remove("open");
+      toggle.classList.remove("open");
+    });
+  });
+})();
+
+
+// ============================================================
+// INDEX PAGE
 // ============================================================
 if (isIndexPage) {
 
-  // --- DOM references ---
-  var form             = document.getElementById("recommend-form");
-  var submitBtn        = document.getElementById("submit-btn");
-  var btnLabel         = document.getElementById("btn-label");
-  var btnLoading       = document.getElementById("btn-loading");
-  var resultsSection   = document.getElementById("results-section");
-  var resultsGrid      = document.getElementById("results-grid");
-  var resultsLoading   = document.getElementById("results-loading");
-  var resultsEmpty     = document.getElementById("results-empty");
-  var emptyMessage     = document.getElementById("empty-message");
-  var skillsHidden     = document.getElementById("skills");
-  var skillsInput      = document.getElementById("skills-input");
-  var chipsSelected    = document.getElementById("skill-chips-selected");
-  var availableChips   = document.querySelectorAll(".skill-chip");
+  // DOM references
+  var form              = document.getElementById("recommend-form");
+  var submitBtn         = document.getElementById("submit-btn");
+  var btnLabel          = document.getElementById("btn-label");
+  var btnLoading        = document.getElementById("btn-loading");
+  var resultsSection    = document.getElementById("results-section");
+  var resultsGrid       = document.getElementById("results-grid");
+  var resultsLoadingEl  = document.getElementById("results-loading");
+  var resultsEmptyEl    = document.getElementById("results-empty");
+  var emptyMessageEl    = document.getElementById("empty-message");
+  var skillsHidden      = document.getElementById("skills");
+  var skillsTextInput   = document.getElementById("skills-input");
+  var chipsSelectedEl   = document.getElementById("skill-chips-selected");
+  var quickPickChips    = document.querySelectorAll(".skill-chip");
 
-  // Holds the list of skills the user has added
+  // Tracks currently selected skills to prevent duplicates
   var selectedSkills = [];
 
 
@@ -37,61 +68,55 @@ if (isIndexPage) {
   // Skill chip manager
   // ----------------------------------------------------------
 
-  // Add a skill when user presses Enter in the text box
-  skillsInput.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      var value = skillsInput.value.trim();
+  // Add skill on Enter key in the text input
+  skillsTextInput.addEventListener("keydown", function (evt) {
+    if (evt.key === "Enter") {
+      evt.preventDefault();
+      var value = skillsTextInput.value.trim();
       if (value) {
         addSkill(value);
-        skillsInput.value = "";
+        skillsTextInput.value = "";
       }
     }
   });
 
-  // Add a skill when user clicks one of the quick-pick chips
-  availableChips.forEach(function (chip) {
+  // Add skill on quick-pick chip click
+  quickPickChips.forEach(function (chip) {
     chip.addEventListener("click", function () {
-      var skill = chip.getAttribute("data-skill");
-      if (skill) {
-        addSkill(skill);
-        chip.classList.add("active"); // Mark the chip as selected
-      }
+      addSkill(chip.getAttribute("data-skill"));
+      chip.classList.add("active");
     });
   });
 
-  // Focus the text input when the user clicks anywhere inside the wrap
-  var skillWrap = document.querySelector(".skill-input-wrap");
+  // Focus the text input when clicking anywhere in the chip wrap
+  var skillWrap = document.getElementById("skill-input-wrap");
   if (skillWrap) {
-    skillWrap.addEventListener("click", function () {
-      skillsInput.focus();
-    });
+    skillWrap.addEventListener("click", function () { skillsTextInput.focus(); });
   }
 
-  function addSkill(skill) {
-    // Prevent duplicate entries (case-insensitive check)
-    var lower = skill.toLowerCase();
-    var exists = selectedSkills.some(function (s) {
-      return s.toLowerCase() === lower;
+  function addSkill(rawSkill) {
+    var skill = rawSkill.trim();
+    if (!skill) return;
+
+    // Block duplicate entries (case-insensitive)
+    var isDuplicate = selectedSkills.some(function (s) {
+      return s.toLowerCase() === skill.toLowerCase();
     });
-    if (exists) return;
+    if (isDuplicate) return;
 
     selectedSkills.push(skill);
     renderSelectedChips();
-    syncHiddenField();
+    syncSkillsHiddenInput();
     clearFieldError("skills-error");
   }
 
   function removeSkill(skill) {
-    // Remove skill from the array and re-render
-    selectedSkills = selectedSkills.filter(function (s) {
-      return s !== skill;
-    });
+    selectedSkills = selectedSkills.filter(function (s) { return s !== skill; });
     renderSelectedChips();
-    syncHiddenField();
+    syncSkillsHiddenInput();
 
-    // Un-highlight the quick-pick chip if it matches
-    availableChips.forEach(function (chip) {
+    // Un-highlight the quick-pick button if it matches the removed skill
+    quickPickChips.forEach(function (chip) {
       if (chip.getAttribute("data-skill") === skill) {
         chip.classList.remove("active");
       }
@@ -99,14 +124,13 @@ if (isIndexPage) {
   }
 
   function renderSelectedChips() {
-    // Clear and rebuild the chips inside the input wrap
-    chipsSelected.innerHTML = "";
+    chipsSelectedEl.innerHTML = "";
     selectedSkills.forEach(function (skill) {
-      var chip = document.createElement("span");
-      chip.className = "skill-chip-selected";
-      chip.textContent = skill;
+      var chipEl = document.createElement("span");
+      chipEl.className = "skill-chip-selected";
+      chipEl.textContent = skill;
 
-      // Remove button on each chip
+      // Remove button for each chip
       var removeBtn = document.createElement("button");
       removeBtn.type = "button";
       removeBtn.className = "skill-chip-remove";
@@ -117,19 +141,19 @@ if (isIndexPage) {
         removeSkill(skill);
       });
 
-      chip.appendChild(removeBtn);
-      chipsSelected.appendChild(chip);
+      chipEl.appendChild(removeBtn);
+      chipsSelectedEl.appendChild(chipEl);
     });
   }
 
-  function syncHiddenField() {
-    // Keep the hidden input in sync so the form can read the value
+  function syncSkillsHiddenInput() {
+    // Keep the hidden <input> in sync for form serialisation
     skillsHidden.value = selectedSkills.join(", ");
   }
 
 
   // ----------------------------------------------------------
-  // Form validation helpers
+  // Form validation
   // ----------------------------------------------------------
 
   function showFieldError(fieldId, message) {
@@ -144,28 +168,25 @@ if (isIndexPage) {
 
   function clearAllErrors() {
     ["skills-error", "level-error", "interest-error", "time-error"].forEach(clearFieldError);
-    document.getElementById("form-error-general").textContent = "";
+    var generalErr = document.getElementById("form-error-general");
+    if (generalErr) generalErr.textContent = "";
   }
 
   function validateForm() {
-    // Returns true if valid, false and shows errors if not
     var valid = true;
 
     if (selectedSkills.length === 0 && !skillsHidden.value.trim()) {
       showFieldError("skills-error", "Please add at least one skill.");
       valid = false;
     }
-
     if (!document.getElementById("level").value) {
       showFieldError("level-error", "Please select your experience level.");
       valid = false;
     }
-
     if (!document.getElementById("interest").value) {
       showFieldError("interest-error", "Please select an area of interest.");
       valid = false;
     }
-
     if (!document.getElementById("time").value) {
       showFieldError("time-error", "Please select your time availability.");
       valid = false;
@@ -179,34 +200,33 @@ if (isIndexPage) {
   // Form submission and API call
   // ----------------------------------------------------------
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+  form.addEventListener("submit", function (evt) {
+    evt.preventDefault();
     clearAllErrors();
 
     if (!validateForm()) return;
 
-    // Show loading state
     setLoadingState(true);
 
-    // Build the request payload
     var payload = {
-      skills:   skillsHidden.value.trim() || skillsInput.value.trim(),
+      skills:   skillsHidden.value.trim() || skillsTextInput.value.trim(),
       level:    document.getElementById("level").value,
       interest: document.getElementById("interest").value,
       time:     document.getElementById("time").value
     };
 
     fetch("/api/recommend", {
-      method: "POST",
+      method:  "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body:    JSON.stringify(payload)
     })
       .then(function (res) { return res.json(); })
       .then(function (data) {
         setLoadingState(false);
 
         if (data.error) {
-          document.getElementById("form-error-general").textContent = data.error;
+          var generalErr = document.getElementById("form-error-general");
+          if (generalErr) generalErr.textContent = data.error;
           return;
         }
 
@@ -214,9 +234,9 @@ if (isIndexPage) {
       })
       .catch(function (err) {
         setLoadingState(false);
-        document.getElementById("form-error-general").textContent =
-          "Something went wrong. Please try again.";
-        console.error("API error:", err);
+        var generalErr = document.getElementById("form-error-general");
+        if (generalErr) generalErr.textContent = "Something went wrong. Please try again.";
+        console.error("API request failed:", err);
       });
   });
 
@@ -225,44 +245,42 @@ if (isIndexPage) {
     btnLabel.style.display   = isLoading ? "none"   : "inline";
     btnLoading.style.display = isLoading ? "inline" : "none";
 
-    // Show results section with loading indicator
     if (isLoading) {
-      resultsSection.style.display = "block";
-      resultsLoading.style.display = "block";
-      resultsGrid.style.display    = "none";
-      resultsEmpty.style.display   = "none";
+      // Show the results section with only the loading indicator visible
+      resultsSection.style.display    = "block";
+      resultsLoadingEl.style.display  = "block";
+      resultsGrid.style.display       = "none";
+      resultsEmptyEl.style.display    = "none";
       resultsSection.scrollIntoView({ behavior: "smooth" });
     } else {
-      resultsLoading.style.display = "none";
-      resultsGrid.style.display    = "grid";
+      resultsLoadingEl.style.display  = "none";
+      resultsGrid.style.display       = "grid";
     }
   }
 
 
   // ----------------------------------------------------------
-  // Render project result cards
+  // Render result cards
   // ----------------------------------------------------------
 
   function renderResults(projects, message) {
-    resultsSection.style.display = "block";
-    resultsLoading.style.display = "none";
-    resultsGrid.innerHTML        = "";
+    resultsSection.style.display    = "block";
+    resultsLoadingEl.style.display  = "none";
+    resultsGrid.innerHTML           = "";
 
     if (!projects || projects.length === 0) {
-      // Show empty state
-      resultsGrid.style.display   = "none";
-      resultsEmpty.style.display  = "block";
-      if (message) emptyMessage.textContent = message;
+      resultsGrid.style.display      = "none";
+      resultsEmptyEl.style.display   = "block";
+      if (message && emptyMessageEl) emptyMessageEl.textContent = message;
       resultsSection.scrollIntoView({ behavior: "smooth" });
       return;
     }
 
-    resultsEmpty.style.display = "none";
-    resultsGrid.style.display  = "grid";
+    resultsEmptyEl.style.display  = "none";
+    resultsGrid.style.display     = "grid";
 
     projects.forEach(function (project) {
-      var card = buildProjectCard(project);
-      resultsGrid.appendChild(card);
+      resultsGrid.appendChild(buildProjectCard(project));
     });
 
     resultsSection.scrollIntoView({ behavior: "smooth" });
@@ -277,49 +295,47 @@ if (isIndexPage) {
     title.className   = "project-card-title";
     title.textContent = project.title;
 
-    // Description (truncated to keep cards uniform)
+    // Description (truncated for visual consistency)
     var desc = document.createElement("p");
     desc.className   = "project-card-desc";
     desc.textContent = truncate(project.description, 120);
 
     // Tags row
-    var tags = document.createElement("div");
-    tags.className = "project-card-tags";
+    var tagsRow = document.createElement("div");
+    tagsRow.className = "project-card-tags";
 
-    // Skill tags (first two only to avoid overflow)
-    var skills = project.skills || [];
-    skills.slice(0, 2).forEach(function (skill) {
-      tags.appendChild(makeTag(skill, "skill"));
+    // Show the first two skills as tags
+    (project.skills || []).slice(0, 2).forEach(function (skill) {
+      tagsRow.appendChild(createTag(skill, "skill"));
     });
 
-    // Level tag with colour-coded class
+    // Level tag (colour-coded via CSS class)
     var levelClass = "level " + (project.level || "").toLowerCase();
-    tags.appendChild(makeTag(project.level, levelClass));
+    tagsRow.appendChild(createTag(project.level, levelClass));
 
     // Time tag
-    tags.appendChild(makeTag("Time: " + project.time, "time"));
+    tagsRow.appendChild(createTag("Time: " + project.time, "time"));
 
-    // Footer row with action button
+    // Footer with view-details link
     var footer = document.createElement("div");
     footer.className = "project-card-footer";
 
-    var btn = document.createElement("a");
-    btn.className = "btn-details";
-    btn.textContent = "View Full Project";
-    btn.href = "/project/" + project.id;
+    var link = document.createElement("a");
+    link.className   = "btn-details";
+    link.textContent = "View Full Project";
+    link.href        = "/project/" + project.id;
 
-    footer.appendChild(btn);
+    footer.appendChild(link);
 
-    // Assemble card
     card.appendChild(title);
     card.appendChild(desc);
-    card.appendChild(tags);
+    card.appendChild(tagsRow);
     card.appendChild(footer);
 
     return card;
   }
 
-  function makeTag(text, type) {
+  function createTag(text, type) {
     var span = document.createElement("span");
     span.className   = "project-tag project-tag--" + type;
     span.textContent = text;
@@ -335,73 +351,69 @@ if (isIndexPage) {
 
 
 // ============================================================
-// DETAIL PAGE LOGIC
+// DETAIL PAGE
 // ============================================================
 if (isDetailPage) {
 
-  var codePanel          = document.getElementById("code-panel");
-  var codePanelOverlay   = document.getElementById("code-panel-overlay");
-  var codeContent        = document.getElementById("code-content");
-  var codePanelFilename  = document.getElementById("code-panel-filename");
+  var codePanel         = document.getElementById("code-panel");
+  var codePanelOverlay  = document.getElementById("code-panel-overlay");
+  var codeContentEl     = document.getElementById("code-content");
+  var codePanelFilename = document.getElementById("code-panel-filename");
+  var btnViewCode       = document.getElementById("btn-view-code");
+  var btnViewCodeSm     = document.getElementById("btn-view-code-sm");
+  var btnClosePanel     = document.getElementById("code-panel-close");
 
-  // Both "View Code" buttons (hero and sidebar) trigger the same panel
-  var btnViewCode   = document.getElementById("btn-view-code");
-  var btnViewCodeSm = document.getElementById("btn-view-code-sm");
-  var btnClosePanel = document.getElementById("code-panel-close");
-
-  // Track whether code has already been fetched to avoid repeat requests
+  // Cache flag so code is only fetched once per page load
   var codeFetched = false;
 
   function openCodePanel() {
+    if (!codePanel) return;
     codePanel.classList.add("active");
-    codePanelOverlay.classList.add("active");
-    document.body.style.overflow = "hidden"; // Prevent background scroll
+    if (codePanelOverlay) codePanelOverlay.classList.add("active");
+    document.body.style.overflow = "hidden";
 
-    // Fetch code content only on first open
-    if (!codeFetched) {
-      fetchCode();
-    }
+    if (!codeFetched) fetchStarterCode();
   }
 
   function closeCodePanel() {
+    if (!codePanel) return;
     codePanel.classList.remove("active");
-    codePanelOverlay.classList.remove("active");
+    if (codePanelOverlay) codePanelOverlay.classList.remove("active");
     document.body.style.overflow = "";
   }
 
-  function fetchCode() {
-    codeContent.textContent = "Loading starter code...";
+  function fetchStarterCode() {
+    if (codeContentEl) codeContentEl.textContent = "Loading starter code...";
 
     fetch("/project/" + PROJECT_ID + "/code")
       .then(function (res) { return res.json(); })
       .then(function (data) {
         if (data.error) {
-          codeContent.textContent = "Error: " + data.error;
+          if (codeContentEl) codeContentEl.textContent = "Error: " + data.error;
           return;
         }
-        // Display the filename and raw code
-        codePanelFilename.textContent = data.filename;
-        codeContent.textContent = data.code;
+        if (codePanelFilename) codePanelFilename.textContent = data.filename;
+        if (codeContentEl)     codeContentEl.textContent     = data.code;
         codeFetched = true;
       })
       .catch(function () {
-        codeContent.textContent = "Failed to load starter code. Try downloading it instead.";
+        if (codeContentEl) {
+          codeContentEl.textContent = "Could not load starter code. Try downloading it instead.";
+        }
       });
   }
 
-  // Wire up open/close buttons if they exist on the page
+  // Attach open/close handlers
   if (btnViewCode)   btnViewCode.addEventListener("click", openCodePanel);
   if (btnViewCodeSm) btnViewCodeSm.addEventListener("click", openCodePanel);
   if (btnClosePanel) btnClosePanel.addEventListener("click", closeCodePanel);
 
-  // Close panel when clicking the dark overlay
   if (codePanelOverlay) {
     codePanelOverlay.addEventListener("click", closeCodePanel);
   }
 
-  // Close panel with the Escape key
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") closeCodePanel();
+  document.addEventListener("keydown", function (evt) {
+    if (evt.key === "Escape") closeCodePanel();
   });
 
 } // end isDetailPage
