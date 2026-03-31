@@ -1,62 +1,99 @@
-from flask import Blueprint, render_template, request, send_file
-from utils.recommender import load_projects, recommend_projects
+# routes/main_routes.py
+# All application routes registered as a Flask Blueprint.
+# Each route is kept thin: it validates input, calls a utility function,
+# and returns a response. No business logic lives here.
 
-main_routes = Blueprint('main_routes', __name__)
+from flask import Blueprint, render_template, request, jsonify, send_from_directory, abort
+
+from utils.recommender import get_recommendations, validate_recommendation_inputs
+from utils.data_loader import find_project_by_id
+from utils.file_server import read_starter_code, resolve_starter_file, get_starter_code_dir
+
+# Create the Blueprint that app.py will register
+main = Blueprint("main", __name__)
 
 
-# Home route
-@main_routes.route('/', methods=['GET', 'POST'])
+@main.route("/")
 def index():
-    projects = load_projects()
-    recommendations = []
-    error = None
-
-    if request.method == 'POST':
-        # Get form data
-        skill = request.form.get("skill")
-        level = request.form.get("level")
-        interest = request.form.get("interest")
-        time = request.form.get("time")
-
-        # Validate input
-        if not skill or not level or not interest or not time:
-            error = "Please fill all fields"
-        else:
-            user_input = {
-                "skill": skill,
-                "level": level,
-                "interest": interest,
-                "time": time
-            }
-
-            # Get recommendations
-            recommendations = recommend_projects(user_input, projects)
-
-    return render_template(
-        "index.html",
-        recommendations=recommendations,
-        error=error
-    )
+    """Render the homepage with the skill input form."""
+    return render_template("index.html")
 
 
-# Project detail route
-@main_routes.route('/project/<int:project_id>')
+@main.route("/api/recommend", methods=["POST"])
+def recommend():
+    """
+    Accept a JSON body with user inputs and return matching project recommendations.
+
+    Expected JSON fields:
+        skills   (str) - comma-separated list of skills
+        level    (str) - Beginner | Intermediate | Advanced
+        interest (str) - Web | Data | Education | Automation | Games
+        time     (str) - Low | Medium | High
+    """
+    payload = request.get_json()
+
+    if not payload:
+        return jsonify({"error": "Request body must be valid JSON."}), 400
+
+    skills            = payload.get("skills", "").strip()
+    level             = payload.get("level", "").strip()
+    interest          = payload.get("interest", "").strip()
+    time_availability = payload.get("time", "").strip()
+
+    # Validate before running the recommendation engine
+    errors = validate_recommendation_inputs(skills, level, interest, time_availability)
+    if errors:
+        # Return only the first error to keep the UI message clean
+        return jsonify({"error": errors[0]}), 400
+
+    results = get_recommendations(skills, level, interest, time_availability)
+
+    if not results:
+        return jsonify({
+            "projects": [],
+            "message": (
+                "No projects matched your inputs. "
+                "Try different skills or broaden your interest area."
+            )
+        }), 200
+
+    return jsonify({"projects": results}), 200
+
+
+@main.route("/project/<int:project_id>")
 def project_detail(project_id):
-    projects = load_projects()
-
-    # Find project by ID
-    project = next((p for p in projects if p.get("id") == project_id), None)
-
+    """Render the full detail page for a single project."""
+    project = find_project_by_id(project_id)
     if not project:
-        return "Project not found", 404
-
+        abort(404)
     return render_template("project.html", project=project)
 
 
-# Download starter code
-@main_routes.route('/download/<path:filename>')
-def download_file(filename):
-    try:
-        return send_file(filename, as_attachment=True)
-    except Exception:
-        return "File not found", 404
+@main.route("/project/<int:project_id>/code")
+def view_code(project_id):
+    """Return the starter code file contents as JSON for inline display."""
+    project = find_project_by_id(project_id)
+    if not project:
+        return jsonify({"error": "Project not found."}), 404
+
+    code_data = read_starter_code(project)
+    if not code_data:
+        return jsonify({"error": "Starter code not available for this project."}), 404
+
+    return jsonify(code_data), 200
+
+
+@main.route("/project/<int:project_id>/download")
+def download_code(project_id):
+    """Serve the starter code file as a downloadable attachment."""
+    project = find_project_by_id(project_id)
+    if not project:
+        abort(404)
+
+    full_path = resolve_starter_file(project)
+    if not full_path:
+        abort(404)
+
+    import os
+    filename = os.path.basename(full_path)
+    return send_from_directory(get_starter_code_dir(), filename, as_attachment=True)
